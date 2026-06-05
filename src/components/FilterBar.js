@@ -1,39 +1,41 @@
 import React from 'react';
 import { StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native';
 
-export default function FilterBar({ selectedFilter, onSelectFilter }){
-    categories = ['All', 'Food', 'Transport', 'Bills', 'Rent', 'Income']
+export default function FilterBar({ selectedFilter, onSelectFilter }) {
+  // 1. Display Categories
+  const categories = ['All', 'Food', 'Transport', 'Bills', 'Rent', 'Income'];
 
-    return(
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle = {StyleSheet.scrollContainer}        
-        >
-         { categories.map((category)=> {
-            const isActive = selectedFilter === category
-
-            return (
-                <TouchableOpacity
-                  key={category}
-                  activeOpacity={0.7}
-                  onPress = {()=> onSelectFilters(category)}
-                  style={[
+  return (
+    <ScrollView 
+      horizontal 
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.scrollContainer}
+    >
+      {categories.map((category) => {
+        const isActive = selectedFilter === category;
+        
+        return (
+          <TouchableOpacity
+            key={category}
+            activeOpacity={0.7}
+            // 2. Update selected filter on press
+            onPress={() => onSelectFilter(category)}
+            style={[
               styles.pillButton,
               isActive && styles.activePillButton
             ]}
-                >
-                    <Text style={[
-                        style.pillText,isActive &&
-                        styles.activePillText
-                    ]}> 
-                       {category}
-                    </Text>
-                </TouchableOpacity>
-            )
-         })}
-        </ScrollView>
-    )
+          >
+            <Text style={[
+              styles.pillText,
+              isActive && styles.activePillText
+            ]}>
+              {category}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({

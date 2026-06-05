@@ -1,24 +1,33 @@
-import React from 'react';
-import { StyleSheet, View, SafeAreaView } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, SafeAreaView } from 'react-native';
 
-// 1. Import your modular UI elements
 import Header from '../components/Header';
 import BalanceCard from '../components/BalanceCard';
+import FilterBar from '../components/FilterBar';
+import ExpenseList from '../components/ExpenseList'; // 1. Import the list component
 
-// 2. Import the database source file directly
 import { dummyExpenses } from '../data/expenses';
 
 export default function HomeScreen() {
+  const [activeFilter, setActiveFilter] = useState('All');
+
+  // Math logic feeding the conditional layout array
+  const filteredExpenses = activeFilter === 'All'
+    ? dummyExpenses
+    : dummyExpenses.filter(item => item.category === activeFilter);
+
   return (
     <SafeAreaView style={styles.screenContainer}>
-      {/* App brand details top layer */}
       <Header />
-      
-      {/* The balance engine calculates totals directly from the data file */}
       <BalanceCard transactions={dummyExpenses} />
+      
+      <FilterBar 
+        selectedFilter={activeFilter} 
+        onSelectFilter={setActiveFilter} 
+      />
 
-      {/* The future FilterBar and ExpenseList components will be placed here */}
-      <View style={styles.listPlaceholder} />
+      {/* 2. Drop the dynamic list engine down here! */}
+      <ExpenseList data={filteredExpenses} />
     </SafeAreaView>
   );
 }
@@ -27,8 +36,5 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: '#F8F9FA',
-  },
-  listPlaceholder: {
-    flex: 1,
   },
 });
