@@ -15,23 +15,21 @@ export default function FilterBar({ selectedFilter, onSelectFilter }) {
         const isActive = selectedFilter === category;
         
         return (
-          <TouchableOpacity
+         <TouchableOpacity
             key={category}
-            activeOpacity={0.7}
-            // 2. Update selected filter on press
             onPress={() => onSelectFilter(category)}
             style={[
-              styles.pillButton,
-              isActive && styles.activePillButton
+                styles.pillButton,
+                isActive && styles.activePillButton // Overrides background
             ]}
-          >
+            >
             <Text style={[
-              styles.pillText,
-              isActive && styles.activePillText
+                styles.pillText,
+                isActive && styles.activePillText   // Overrides text color to white
             ]}>
-              {category}
+                {category}
             </Text>
-          </TouchableOpacity>
+            </TouchableOpacity>
         );
       })}
     </ScrollView>
@@ -44,39 +42,27 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     alignItems: 'center',
   },
-  pillButton: {
+pillButton: {
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 20,
-    backgroundColor: '#FFF',
+    backgroundColor: '#FFF',       // Light background for unselected pills
     marginRight: 10,
     borderWidth: 1,
     borderColor: '#EAEAEA',
-    
-    // Subtle shadow for unselected pills
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
   },
   activePillButton: {
-    backgroundColor: '#1E1E24', // Matches your BalanceCard theme
+    backgroundColor: '#1E1E24',    // Dark background for selected "All" pill
     borderColor: '#1E1E24',
-    
-    // Deeper shadow for active pill
-    shadowColor: '#1E1E24',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 3,
   },
+  
+  // ⚡ FIX THE TEXT COLOR CONTRAST HERE ⚡
   pillText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#7D8491',
+    color: '#7D8491',              // Dark grey text so it stands out on white pills
   },
   activePillText: {
-    color: '#FFF',
+    color: '#FFFFFF',              // Pure white text so it pops out on the dark "All" pill
   },
 });

@@ -2,43 +2,44 @@ import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView, View } from 'react-native';
 
 import Header from '../components/Header';
-import FloatingActionButton from '../components/CustomButton'
 import BalanceCard from '../components/BalanceCard';
 import FilterBar from '../components/FilterBar';
-import ExpenseList from '../components/ExpenseList'; // 1. Import the list component
+import ExpenseList from '../components/ExpenseList';
+import FloatingActionButton from '../components/CustomButton'; 
 
 import { dummyExpenses } from '../data/expenses';
 
 export default function HomeScreen() {
   const [activeFilter, setActiveFilter] = useState('All');
 
-  // Math logic feeding the conditional layout array
   const filteredExpenses = activeFilter === 'All'
     ? dummyExpenses
     : dummyExpenses.filter(item => item.category === activeFilter);
 
-  const handlePressAdd = () => {
-    console.log('Navigate to AddExpenseScreen!');
-    // This is where your future navigation link will trigger!
-  };
-return (
-    // Wrap the entire screen view in a relative container 
-    // so the absolute FAB positions itself perfectly relative to the viewport edges
+  return (
     <View style={styles.rootContainer}>
       <SafeAreaView style={styles.screenContainer}>
+        {/* 1. Header takes up natural space */}
         <Header />
+        
+        {/* 2. Card takes up natural space */}
         <BalanceCard transactions={dummyExpenses} />
         
-        <FilterBar 
-          selectedFilter={activeFilter} 
-          onSelectFilter={setActiveFilter} 
-        />
+        {/* ⚡ THE FIX: Wrap the FilterBar in a dedicated non-flexible View wrapper ⚡ */}
+        <View style={styles.filterWrapper}>
+          <FilterBar 
+            selectedFilter={activeFilter} 
+            onSelectFilter={setActiveFilter} 
+          />
+        </View>
 
-        <ExpenseList data={filteredExpenses} />
+        {/* 3. The list takes up ALL remaining layout space via flex: 1 */}
+        <View style={styles.listWrapper}>
+          <ExpenseList data={filteredExpenses} />
+        </View>
       </SafeAreaView>
 
-      {/* Render the Floating Action Button right here */}
-      <FloatingActionButton onPress={handlePressAdd} />
+      <FloatingActionButton onPress={() => console.log('Add clicked')} />
     </View>
   );
 }
@@ -50,5 +51,15 @@ const styles = StyleSheet.create({
   },
   screenContainer: {
     flex: 1,
+  },
+  // Allocates precise layout limits for the category list
+  filterWrapper: {
+    height: 90, // Locks the heights so nothing squeezes it out of existence
+    justifyContent: 'center',
+    zIndex: 10, // Keeps it stacked safely on top layer layouts
+  },
+  // Allocates the rest of the display real estate exclusively for lists
+  listWrapper: {
+    flex: 1, 
   },
 });

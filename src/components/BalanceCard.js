@@ -43,7 +43,7 @@ export default function BalanceCard({ transactions = [] }) {
         <View style={styles.statColumn}>
           <View style={styles.iconLabelRow}>
             <View style={[styles.iconWrapper, { backgroundColor: 'rgba(76, 217, 100, 0.15)' }]}>
-              <AntDesign name="arrowup" size={14} color="#4CD964" />
+              <AntDesign name="caretdown" size={14} color="#FF3B30" />
             </View>
             <Text style={styles.statLabel}>Income</Text>
           </View>
@@ -54,7 +54,7 @@ export default function BalanceCard({ transactions = [] }) {
         <View style={styles.statColumn}>
           <View style={styles.iconLabelRow}>
             <View style={[styles.iconWrapper, { backgroundColor: 'rgba(255, 59, 48, 0.15)' }]}>
-              <AntDesign name="arrowdown" size={14} color="#FF3B30" />
+            <AntDesign name="fall" size={14} color="#FF3B30" />
             </View>
             <Text style={styles.statLabel}>Expenses</Text>
           </View>
