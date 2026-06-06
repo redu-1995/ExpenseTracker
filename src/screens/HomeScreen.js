@@ -9,7 +9,8 @@ import FloatingActionButton from '../components/CustomButton';
 
 import { dummyExpenses } from '../data/expenses';
 
-export default function HomeScreen() {
+export default function HomeScreen( ) {
+ 
   const [activeFilter, setActiveFilter] = useState('All');
 
   const filteredExpenses = activeFilter === 'All'
