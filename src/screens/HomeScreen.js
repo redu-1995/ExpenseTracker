@@ -9,8 +9,13 @@ import FloatingActionButton from '../components/CustomButton';
 
 import { dummyExpenses } from '../data/expenses';
 
-export default function HomeScreen( ) {
+export default function HomeScreen( {navigation}) {
  
+
+   const handlePressAdd = () => {
+    // Navigates directly to the screen name defined in our stack
+    navigation.navigate('AddExpense'); 
+  };
   const [activeFilter, setActiveFilter] = useState('All');
 
   const filteredExpenses = activeFilter === 'All'
@@ -40,7 +45,7 @@ export default function HomeScreen( ) {
         </View>
       </SafeAreaView>
 
-      <FloatingActionButton onPress={() => console.log('Add clicked')} />
+      <FloatingActionButton onPress={handlePressAdd} />
     </View>
   );
 }
