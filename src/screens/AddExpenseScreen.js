@@ -7,37 +7,85 @@ import {
   Text, 
   TouchableOpacity, 
   Modal, 
-  FlatList 
+  FlatList,
+  Alert
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import ScreenHeader from '../components/ScreenHeader';
 import CustomInput from '../components/CustomInput';
-export default function AddExpenseScreen({navigation}) {
-  const [title,setTitle] = useState('')
-  const [amount, setAmount] = useState('')
-  const [transactionType, setTransactionType] = useState('Expense');
-  const expenseCategories = ['Food', 'Transport', 'Bills', 'Rent', 'Shopping', 'Entertainment'];
-  const incomeCategories = ['Salary', 'Bonus', 'Freelance', 'Gift'];
 
-  // 2. Category State Tracking (Defaults to first Expense)
+export default function AddExpenseScreen({ navigation, route }) {
+  // Core text and type input states
+  const [title, setTitle] = useState('');
+  const [amount, setAmount] = useState('');
+  const [transactionType, setTransactionType] = useState('Expense');
+  
+  // Category picker states
   const [category, setCategory] = useState('Food');
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  useEffect(()=>{
-    if(transactionType === 'Expense'){
-      setCategory('Food')
-    }
-    else{
-      setCategory('Salary')
-    }
+  // 📅 Date selector states
+  const [selectedDate, setSelectedDate] = useState('2026-06-08'); // Current timeline date anchor
+  const [isDateModalVisible, setIsDateModalVisible] = useState(false);
 
-  },[transactionType])
-  const handleBackAction = () => {
-    console.log('Pop back to HomeScreen');
-    // Navigation wireframe will replace this log shortly!
+  const expenseCategories = ['Food', 'Transport', 'Bills', 'Rent', 'Shopping', 'Entertainment'];
+  const incomeCategories = ['Salary', 'Bonus', 'Freelance', 'Gift'];
+
+  // Hardcoded date tracking configurations
+  const availableDates = [
+    { label: 'Today (Jun 8)', value: '2026-06-08' },
+    { label: 'Yesterday (Jun 7)', value: '2026-06-07' },
+    { label: 'Saturday (Jun 6)', value: '2026-06-06' },
+    { label: 'Friday (Jun 5)', value: '2026-06-05' },
+  ];
+
+  // Automating fallback tags when transaction types shift
+  useEffect(() => {
+    if (transactionType === 'Expense') {
+      setCategory('Food');
+    } else {
+      setCategory('Salary');
+    }
+  }, [transactionType]);
+
+  const activeCategoryList = transactionType === 'Expense' ? expenseCategories : incomeCategories;
+
+  // Helper calculation formatter to show readable data tags
+  const getDateLabel = (val) => {
+    const match = availableDates.find(d => d.value === val);
+    return match ? match.label : val;
   };
 
- const activeCategoryList = transactionType === 'Expense' ? expenseCategories : incomeCategories;
+  // 💾 CORE SUBMISSION AND APPEND ACTION HANDLER
+  const handleSaveTransaction = () => {
+    if (!title.trim() || !amount.trim()) {
+      Alert.alert('Missing Fields', 'Please complete the Title and Amount inputs.');
+      return;
+    }
+
+    const parsedAmount = parseFloat(amount);
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+      Alert.alert('Invalid Amount', 'Please input a clean positive balance number.');
+      return;
+    }
+
+    // Creating object map structurally aligned to match data row styles
+    const newTransaction = {
+      id: Math.random().toString(), 
+      title: title.trim(),
+      amount: transactionType === 'Expense' ? -parsedAmount : parsedAmount,
+      date: selectedDate,
+      category: category,
+      icon: transactionType === 'Expense' ? 'shopping-cart' : 'dollar-sign'
+    };
+
+    // Safely fire route state parameter instructions back to home screen
+    if (route.params?.onSave) {
+      route.params.onSave(newTransaction);
+    }
+
+    navigation.goBack();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -76,7 +124,7 @@ export default function AddExpenseScreen({navigation}) {
           </View>
         </View>
 
-        {/* 3. Section 5: Category Picker Component Dropdown */}
+        {/* Category Picker Selector */}
         <View style={styles.controlGroup}>
           <Text style={styles.controlLabel}>Category</Text>
           <TouchableOpacity 
@@ -89,23 +137,31 @@ export default function AddExpenseScreen({navigation}) {
           </TouchableOpacity>
         </View>
 
+        {/* 📅 Date Picker Selector */}
+        <View style={styles.controlGroup}>
+          <Text style={styles.controlLabel}>Date</Text>
+          <TouchableOpacity 
+            style={styles.pickerSelector} 
+            activeOpacity={0.7}
+            onPress={() => setIsDateModalVisible(true)}
+          >
+            <Text style={styles.pickerText}>{getDateLabel(selectedDate)}</Text>
+            <Feather name="calendar" size={18} color="#7D8491" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Save Button Component Wrapper */}
+        <TouchableOpacity style={styles.saveButton} activeOpacity={0.8} onPress={handleSaveTransaction}>
+          <Text style={styles.saveButtonText}>Save Transaction</Text>
+        </TouchableOpacity>
+
       </ScrollView>
 
-      {/* MODAL POPUP SELECTOR INTERFACE */}
-      <Modal
-        visible={isModalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setIsModalVisible(false)}
-      >
-        <TouchableOpacity 
-          style={styles.modalOverlay} 
-          activeOpacity={1} 
-          onPress={() => setIsModalVisible(false)}
-        >
+      {/* MODAL CATEGORIES POPUP */}
+      <Modal visible={isModalVisible} transparent={true} animationType="fade" onRequestClose={() => setIsModalVisible(false)}>
+        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setIsModalVisible(false)}>
           <View style={styles.modalContent}>
             <Text style={styles.modalHeaderTitle}>Select Category</Text>
-            
             <FlatList
               data={activeCategoryList}
               keyExtractor={(item) => item}
@@ -117,10 +173,33 @@ export default function AddExpenseScreen({navigation}) {
                     setIsModalVisible(false);
                   }}
                 >
-                  <Text style={[styles.modalItemText, category === item && styles.modalItemTextActive]}>
-                    {item}
-                  </Text>
+                  <Text style={[styles.modalItemText, category === item && styles.modalItemTextActive]}>{item}</Text>
                   {category === item && <Feather name="check" size={18} color="#007AFF" />}
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
+      {/* 📅 MODAL DATE POPUP */}
+      <Modal visible={isDateModalVisible} transparent={true} animationType="fade" onRequestClose={() => setIsDateModalVisible(false)}>
+        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setIsDateModalVisible(false)}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalHeaderTitle}>Select Date</Text>
+            <FlatList
+              data={availableDates}
+              keyExtractor={(item) => item.value}
+              renderItem={({ item }) => (
+                <TouchableOpacity 
+                  style={[styles.modalItem, selectedDate === item.value && styles.modalItemActive]}
+                  onPress={() => {
+                    setSelectedDate(item.value);
+                    setIsDateModalVisible(false);
+                  }}
+                >
+                  <Text style={[styles.modalItemText, selectedDate === item.value && styles.modalItemTextActive]}>{item.label}</Text>
+                  {selectedDate === item.value && <Feather name="check" size={18} color="#007AFF" />}
                 </TouchableOpacity>
               )}
             />
@@ -139,6 +218,7 @@ const styles = StyleSheet.create({
   },
   formBody: {
     padding: 20,
+    paddingBottom: 40,
   },
   controlGroup: {
     marginBottom: 25,
@@ -175,7 +255,6 @@ const styles = StyleSheet.create({
   radioText: { fontSize: 15, fontWeight: '600', color: '#7D8491' },
   activeRadioText: { color: '#1E1E24' },
   
-  // Picker Selector Styles
   pickerSelector: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -197,11 +276,9 @@ const styles = StyleSheet.create({
     color: '#1E1E24',
     fontWeight: '500',
   },
-
-  // Modal Layout Styles
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)', // Dim behind the overlay window
+    backgroundColor: 'rgba(0,0,0,0.4)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -235,15 +312,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 14,
   },
-  modalItemActive: {
-    backgroundColor: '#F8F9FA',
+  modalItemActive: { backgroundColor: '#F8F9FA' },
+  modalItemText: { fontSize: 16, color: '#4B5563' },
+  modalItemTextActive: { color: '#007AFF', fontWeight: '600' },
+
+  // Save Transaction Layout Style properties
+  saveButton: {
+    backgroundColor: '#1E1E24',
+    borderRadius: 14,
+    paddingVertical: 16,
+    alignItems: 'center',
+    marginTop: 10,
+    shadowColor: '#1E1E24',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 4,
   },
-  modalItemText: {
+  saveButtonText: {
+    color: '#FFFFFF',
     fontSize: 16,
-    color: '#4B5563',
-  },
-  modalItemTextActive: {
-    color: '#007AFF',
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });

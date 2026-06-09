@@ -2,7 +2,7 @@ export const dummyExpenses = [
   {
     id: '1',
     title: 'Monthly Salary',
-    amount: 25000,
+    amount: 9800,
     date: '2026-06-01',
     category: 'Income',
     icon: 'dollar-sign',
@@ -10,7 +10,7 @@ export const dummyExpenses = [
   {
     id: '2',
     title: 'Apartment Rent',
-    amount: -8500,
+    amount: -4500,
     date: '2026-06-01',
     category: 'Rent',
     icon: 'home',
@@ -39,60 +39,5 @@ export const dummyExpenses = [
     category: 'Bills',
     icon: 'zap',
   },
-  {
-    id: '6',
-    title: 'Bole Café Macchiato',
-    amount: -180,
-    date: '2026-06-03',
-    category: 'Food',
-    icon: 'coffee',
-  },
-  {
-    id: '7',
-    title: 'Freelance Design Gig',
-    amount: 5500,
-    date: '2026-06-04',
-    category: 'Income',
-    icon: 'briefcase',
-  },
-  {
-    id: '8',
-    title: 'Fuel Refill',
-    amount: -900,
-    date: '2026-06-04',
-    category: 'Transport',
-    icon: 'trending-up',
-  },
-  {
-    id: '9',
-    title: 'Water Utility Bill',
-    amount: -200,
-    date: '2026-06-04',
-    category: 'Bills',
-    icon: 'droplet',
-  },
-  {
-    id: '10',
-    title: 'Tradition Dinner (Habesha)',
-    amount: -2100,
-    date: '2026-06-05',
-    category: 'Food',
-    icon: 'frown', // Using clean vector tags
-  },
-  {
-    id: '11',
-    title: 'Anbessa Bus Pass',
-    amount: -100,
-    date: '2026-06-05',
-    category: 'Transport',
-    icon: 'navigation',
-  },
-  {
-    id: '12',
-    title: 'WiFi Internet Subscription',
-    amount: -1150,
-    date: '2026-06-05',
-    category: 'Bills',
-    icon: 'wifi',
-  }
+  
 ];

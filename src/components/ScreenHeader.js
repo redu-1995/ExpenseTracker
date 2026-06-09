@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
-
+import { Feather } from '@expo/vector-icons';
 export default function ScreenHeader({ title, onBack }) {
   return (
     <View style={styles.headerContainer}>
@@ -11,7 +10,7 @@ export default function ScreenHeader({ title, onBack }) {
         onPress={onBack}
         activeOpacity={0.7}
       >
-        <AntDesign name="arrowleft" size={24} color="#1E1E24" />
+        <Feather name="arrow-left" size={24} color="#1E1E24" />
       </TouchableOpacity>
 
       {/* Screen Context Title */}

@@ -19,6 +19,7 @@ export default function AppNavigator() {
     >
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="AddExpense" component={AddExpenseScreen} />
+      <Stack.Screen name="ExpenseDetail" component={ExpenseDetailScreen} />
       {/* <Stack.Screen name="ExpenseDetail" component={ExpenseDetailScreen} /> */}
     </Stack.Navigator>
   );

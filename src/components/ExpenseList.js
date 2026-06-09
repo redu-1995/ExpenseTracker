@@ -2,8 +2,8 @@ import React from 'react';
 import { StyleSheet, Text, FlatList, View } from 'react-native';
 import ExpenseItem from './ExpenseItem';
 
-export default function ExpenseList({ data }) {
-  // Edge-case feedback block if a filtered category has no elements logged
+// 1. Destructure onItemPress from props
+export default function ExpenseList({ data, onItemPress }) {
   if (data.length === 0) {
     return (
       <View style={styles.emptyContainer}>
@@ -18,7 +18,13 @@ export default function ExpenseList({ data }) {
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.listContainer}
       showsVerticalScrollIndicator={false}
-      renderItem={({ item }) => <ExpenseItem item={item} />}
+      // 2. Pass onItemPress down to the individual item row
+      renderItem={({ item }) => (
+        <ExpenseItem 
+          item={item} 
+          onPress={() => onItemPress && onItemPress(item)} 
+        />
+      )}
     />
   );
 }

@@ -1,78 +1,44 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Feather } from '@expo/vector-icons'; // Or whatever icon package you're using
 
-export default function ExpenseItem({ item }) {
-  const isIncome = item.amount > 0;
+// 1. Destructure the onPress prop
+export default function ExpenseItem({ item, onPress }) {
+  const isExpense = item.amount < 0;
+  const displayAmount = Math.abs(item.amount);
 
   return (
-    <View style={styles.itemCard}>
-      <View style={styles.leftContent}>
-        {/* Category Icon Wrapper */}
-        <View style={styles.iconWrapper}>
-          <Feather name={item.icon || 'tag'} size={18} color="#1E1E24" />
-        </View>
-        
-        {/* Text Stack */}
-        <View>
-          <Text style={styles.titleText}>{item.title}</Text>
-          <Text style={styles.dateText}>{item.date}</Text>
-        </View>
+    // 2. Wrap the root container view in a TouchableOpacity
+    <TouchableOpacity style={styles.cardContainer} activeOpacity={0.7} onPress={onPress}>
+      
+      {/* Your current card contents (Icon, Title, Amount, etc.) goes here */}
+      <View style={styles.leftRowSection}>
+        <Text style={styles.itemTitle}>{item.title}</Text>
+        <Text style={styles.itemCategory}>{item.category}</Text>
       </View>
-
-      {/* Amount Display */}
-      <Text style={[
-        styles.amountText, 
-        { color: isIncome ? '#4CD964' : '#1E1E24' }
-      ]}>
-        {isIncome ? `+${item.amount.toLocaleString()}` : `-${Math.abs(item.amount).toLocaleString()}`} ETB
+      
+      <Text style={[styles.amountText, { color: isExpense ? '#FF3B30' : '#4CD964' }]}>
+        {isExpense ? '-' : '+'}{displayAmount} ETB
       </Text>
-    </View>
+
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  itemCard: {
+  cardContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#FFF',
+    backgroundColor: '#FFFFFF',
     padding: 16,
-    borderRadius: 16,
-    marginBottom: 10,
-    
-    // Smooth layout shadows
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
-    shadowRadius: 6,
-    elevation: 1,
-  },
-  leftContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconWrapper: {
-    width: 40,
-    height: 40,
     borderRadius: 12,
-    backgroundColor: '#F1F3F5',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 14,
+    marginBottom: 10,
   },
-  titleText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#1E1E24',
+  leftRowSection: {
+    flexDirection: 'column',
   },
-  dateText: {
-    fontSize: 12,
-    color: '#9CA3AF',
-    marginTop: 3,
-  },
-  amountText: {
-    fontSize: 15,
-    fontWeight: '700',
-  },
+  itemTitle: { fontSize: 16, fontWeight: '600', color: '#1E1E24' },
+  itemCategory: { fontSize: 13, color: '#9CA3AF', marginTop: 2 },
+  amountText: { fontSize: 16, fontWeight: '700' },
 });
