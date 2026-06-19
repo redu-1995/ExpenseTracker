@@ -8,7 +8,9 @@ import {
   TouchableOpacity, 
   Modal, 
   FlatList,
-  Alert
+  Alert,
+  Platform,  
+  StatusBar  
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import ScreenHeader from '../components/ScreenHeader';
@@ -212,9 +214,10 @@ export default function AddExpenseScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
+ container: {
     flex: 1,
     backgroundColor: '#F8F9FA',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   formBody: {
     padding: 20,

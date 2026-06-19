@@ -1,20 +1,27 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, SafeAreaView, Text, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { 
+  StyleSheet, 
+  View, 
+  SafeAreaView, 
+  Text, 
+  TouchableOpacity, 
+  Alert, 
+  ScrollView,
+  Platform,   
+  StatusBar
+} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import ScreenHeader from '../components/ScreenHeader';
-import CustomInput from '../components/CustomInput'; // Reusing your input component
+import CustomInput from '../components/CustomInput'; 
 
 export default function ExpenseDetailScreen({ route, navigation }) {
-  // Extract data parameters from navigation route
   const { expense, onDelete, onUpdate } = route.params;
 
-  // 1. Local states to manage inline editing mode toggle and input forms
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(expense.title);
   const [amount, setAmount] = useState(Math.abs(expense.amount).toString());
   const [notes, setNotes] = useState(expense.notes || '');
 
-  // Helper dictionary mapping categories to aesthetic visual icons
   const getCategoryIcon = (cat) => {
     switch (cat) {
       case 'Food': return 'shopping-cart';
@@ -42,7 +49,6 @@ export default function ExpenseDetailScreen({ route, navigation }) {
     );
   };
 
-  // 2. Core update execution handler
   const handleSaveChanges = () => {
     if (!title.trim() || !amount.trim()) {
       Alert.alert('Missing Info', 'Please enter a valid Title and Amount.');
@@ -55,7 +61,6 @@ export default function ExpenseDetailScreen({ route, navigation }) {
       return;
     }
 
-    // Preserve the original sign of the transaction (Income vs Expense)
     const signedAmount = expense.amount < 0 ? -numericAmount : numericAmount;
 
     const updatedTransaction = {
@@ -65,7 +70,6 @@ export default function ExpenseDetailScreen({ route, navigation }) {
       notes: notes.trim(),
     };
 
-    // Trigger state persistence update if callback bridge is supplied
     if (onUpdate) {
       onUpdate(updatedTransaction);
     } else {
@@ -76,7 +80,6 @@ export default function ExpenseDetailScreen({ route, navigation }) {
   };
 
   const handleCancelEditing = () => {
-    // Revert inputs back to their verified saved states
     setTitle(expense.title);
     setAmount(Math.abs(expense.amount).toString());
     setNotes(expense.notes || '');
@@ -94,7 +97,6 @@ export default function ExpenseDetailScreen({ route, navigation }) {
 
       <ScrollView contentContainerStyle={styles.contentBody} keyboardShouldPersistTaps="handled">
         
-        {/* HERO ICON PROFILE SUMMARY SECTION (Hidden during active editing to save space) */}
         {!isEditing && (
           <View style={styles.heroCard}>
             <View style={[styles.iconWrapper, { backgroundColor: isExpense ? 'rgba(255, 59, 48, 0.08)' : 'rgba(76, 217, 100, 0.08)' }]}>
@@ -109,7 +111,6 @@ export default function ExpenseDetailScreen({ route, navigation }) {
 
         {!isEditing && <View style={styles.divider} />}
 
-        {/* METADATA FORM INTERFACE FIELD GROUPS */}
         {isEditing ? (
           <View style={styles.editFormContainer}>
             <CustomInput label="Title" value={title} onChangeText={setTitle} placeholder="Enter title" />
@@ -139,7 +140,6 @@ export default function ExpenseDetailScreen({ route, navigation }) {
 
         <View style={styles.divider} />
 
-        {/* DYNAMIC BUTTON ACTIONS WORKSPACE */}
         <View style={styles.actionRow}>
           {isEditing ? (
             <>
@@ -173,7 +173,12 @@ export default function ExpenseDetailScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8F9FA' },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#F8F9FA',
+    // ⚡ CRITICAL HEIGHT FIX: Prevents status bar icons from overlapping the back button target
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+  },
   contentBody: { padding: 24, flexGrow: 1 },
   heroCard: { alignItems: 'center', marginVertical: 15 },
   iconWrapper: { width: 70, height: 70, borderRadius: 35, justifyContent: 'center', alignItems: 'center', marginBottom: 16 },

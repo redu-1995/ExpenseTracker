@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, SafeAreaView, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, SafeAreaView, View, ActivityIndicator, Platform, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Header from '../components/Header';
@@ -124,12 +124,25 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  rootContainer: { flex: 1, backgroundColor: '#F8F9FA' },
-  screenContainer: { flex: 1 },
-  filterWrapper: { height: 90, justifyContent: 'center', zIndex: 10 },
+  rootContainer: { 
+    flex: 1, 
+    backgroundColor: '#F8F9FA' 
+  },
+  screenContainer: { 
+    flex: 1,
+    // ⚡ CRITICAL FIX: Ensures elements never bleed into top phone icons
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0, 
+  },
+  filterWrapper: { 
+    height: 90, 
+    justifyContent: 'center', 
+    zIndex: 10 
+  },
   listWrapper: {
-  flex: 1,
-  backgroundColor: 'transparent', 
-  zIndex: 1, // ⚡ Forces the list to the top so it intercepts touches cleanly
-},
+    flex: 1,
+    backgroundColor: 'transparent', 
+    zIndex: 1, 
+    // ⚡ CRITICAL FIX: Adds space at the bottom so the list items are never blocked by buttons or phone docks
+    paddingBottom: 80, 
+  },
 });

@@ -17,13 +17,7 @@ export default function Header() {
       </View>
 
       {/* Profile/Settings Interactive Icon */}
-      <TouchableOpacity 
-        style={styles.iconButton} 
-        activeOpacity={0.7}
-        onPress={() => console.log('Settings/Profile clicked')}
-      >
-        <Feather name="user" size={22} color="#1E1E24" />
-      </TouchableOpacity>
+      
     </View>
   );
 }
