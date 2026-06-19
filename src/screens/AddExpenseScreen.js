@@ -12,7 +12,7 @@ import {
   Platform,  
   StatusBar  
 } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import Feather from '@expo/vector-icons/Feather'; 
 import ScreenHeader from '../components/ScreenHeader';
 import CustomInput from '../components/CustomInput';
 
@@ -319,7 +319,6 @@ const styles = StyleSheet.create({
   modalItemText: { fontSize: 16, color: '#4B5563' },
   modalItemTextActive: { color: '#007AFF', fontWeight: '600' },
 
-  // Save Transaction Layout Style properties
   saveButton: {
     backgroundColor: '#1E1E24',
     borderRadius: 14,
